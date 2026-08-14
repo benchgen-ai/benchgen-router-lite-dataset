@@ -1,0 +1,52 @@
+[
+  {
+    "index": 0,
+    "agent_id": "frontier_a",
+    "slug": "openai/gpt-oss-120b",
+    "is_reasoning_model": true,
+    "context_window": 131072,
+    "price_per_1m_prompt_usd": 0.037,
+    "price_per_1m_output_usd": 0.17,
+    "verified_at": "2026-08-11"
+  },
+  {
+    "index": 1,
+    "agent_id": "frontier_b",
+    "slug": "deepseek/deepseek-v4-flash-0731",
+    "is_reasoning_model": true,
+    "context_window": 1048576,
+    "price_per_1m_prompt_usd": 0.08,
+    "price_per_1m_output_usd": 0.18,
+    "verified_at": "2026-08-11"
+  },
+  {
+    "index": 2,
+    "agent_id": "frontier_c",
+    "slug": "google/gemma-3-27b-it",
+    "is_reasoning_model": false,
+    "context_window": 262144,
+    "price_per_1m_prompt_usd": 0.08,
+    "price_per_1m_output_usd": 0.45,
+    "verified_at": "2026-08-11"
+  },
+  {
+    "index": 4,
+    "agent_id": "open_mid",
+    "slug": "mistralai/mistral-nemo",
+    "is_reasoning_model": false,
+    "context_window": 131072,
+    "price_per_1m_prompt_usd": 0.019,
+    "price_per_1m_output_usd": 0.03,
+    "verified_at": "2026-08-11"
+  },
+  {
+    "index": 7,
+    "agent_id": "open_cheap_reasoning",
+    "slug": "inclusionai/ling-3.0-flash",
+    "is_reasoning_model": true,
+    "context_window": 262144,
+    "price_per_1m_prompt_usd": 0.021,
+    "price_per_1m_output_usd": 0.063,
+    "verified_at": "2026-08-11"
+  }
+]
