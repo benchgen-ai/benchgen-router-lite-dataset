@@ -1,0 +1,42 @@
+{
+  "collection_version": "v1",
+  "seed": 42,
+  "repetitions": 3,
+  "concurrency": 8,
+  "store_raw_response": true,
+  "max_turns": 5,
+  "_protocol_note": "Trinity section 4.1: max 4096 generated tokens per LLM, minimal reasoning effort, max 5 coordination turns. Repetitions=3 matches the paper's 3 seeds used for per-question-best labels (Appendix A.2.1).",
+  "split_ratios": { "train": 0.6, "validation": 0.2, "test": 0.2 },
+  "max_domain_share": 0.30,
+  "screening": {
+    "tasks_per_source": 40,
+    "repetitions": 2,
+    "note": "Appendix A.6 needs E(D, M) for EVERY candidate agent on EVERY candidate dataset before subsets can be enumerated. Keep this small: it is paid once per candidate agent."
+  },
+  "pilot": {
+    "tasks": 60,
+    "per_domain": { "math": 20, "knowledge": 20, "reasoning": 20 },
+    "note": "60 tasks x 7 agents x 3 repetitions = 1260 calls. Sized so that even if every call saturates max_tokens the run stays under a $2.50 budget; the realistic figure is nearer $0.60."
+  },
+  "full": {
+    "tasks": 1200,
+    "note": "Only after Gate 3 passes."
+  },
+  "per_source_limit": {
+    "math500": 250,
+    "gsm8k": 120,
+    "mmlu": 200,
+    "mmlu_pro": 200,
+    "rlpr": 250,
+    "gpqa_diamond": 198,
+    "arc_challenge": 120,
+    "aime2025_i": 15,
+    "aime2025_ii": 15,
+    "benchgen_turkish": 200
+  },
+  "_source_groups": {
+    "in_distribution": ["math500", "gsm8k", "mmlu", "mmlu_pro", "rlpr", "arc_challenge"],
+    "held_out": ["gpqa_diamond", "aime2025_i", "aime2025_ii", "benchgen_turkish"],
+    "note": "Mirrors Trinity: train in-distribution, measure zero-shot transfer on held-out. Held-out sources are forced into the test split and never appear in train or validation."
+  }
+}

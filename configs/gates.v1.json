@@ -1,0 +1,70 @@
+{
+  "gate_version": "v1",
+  "name": "Gate 3 (pilot health)",
+  "thresholds": [
+    {
+      "metric": "rer_dataset",
+      "label": "`RER` per dataset (Trinity A.6 eq. 14)",
+      "direction": "min",
+      "continue_at": 0.1,
+      "stop_at": 0.03,
+      "note": "The paper's own pool-selection criterion. E(D, M) is accuracy on a whole dataset, so this is much smaller than the per-question number and must be judged on its own scale."
+    },
+    {
+      "metric": "rer_per_question",
+      "label": "`RER` per question (vs Per-Question-Best, Fig. 3)",
+      "direction": "min",
+      "continue_at": 0.15,
+      "stop_at": 0.08,
+      "note": "Headroom against the per-question oracle. Reported because it is what a per-question router could theoretically capture; never quote it as the A.6 number."
+    },
+    {
+      "metric": "n_datasets",
+      "label": "Datasets in the reward matrix",
+      "direction": "min",
+      "continue_at": 3.0,
+      "stop_at": 1.0,
+      "note": "`RER` per dataset is meaningless with one dataset: Z and S* collapse to the same value."
+    },
+    {
+      "metric": "all_equal_rate",
+      "label": "Tasks where all agents score equal",
+      "direction": "max",
+      "continue_at": 0.45,
+      "stop_at": 0.65,
+      "note": "Fugu-Lite V1 scored 0.753 here and its router learned 'always pick Gemini'."
+    },
+    {
+      "metric": "unique_winner_rate",
+      "label": "Tasks with a unique best agent",
+      "direction": "min",
+      "continue_at": 0.25,
+      "stop_at": 0.15,
+      "note": "Fugu-Lite V1 scored 0.103."
+    },
+    {
+      "metric": "min_unique_best_share_scaled",
+      "label": "Weakest agent's uniquely-best share, x pool size",
+      "direction": "min",
+      "continue_at": 0.3,
+      "stop_at": 0.1,
+      "note": "1.0 means the weakest agent is uniquely best exactly as often as a uniform draw predicts. Scaled by pool size so one threshold holds for 4 or 7 agents. Below 0.1 that agent is dead weight in the action space."
+    },
+    {
+      "metric": "max_empty_rate",
+      "label": "Worst agent's empty-response rate",
+      "direction": "max",
+      "continue_at": 0.02,
+      "stop_at": 0.10,
+      "note": "88 of Fugu-Lite's 900 DeepSeek calls were HTTP 200 with empty content."
+    },
+    {
+      "metric": "max_error_rate",
+      "label": "Worst agent's call-error rate",
+      "direction": "max",
+      "continue_at": 0.02,
+      "stop_at": 0.10,
+      "note": "Errors score as wrong answers and silently depress that agent's reward."
+    }
+  ]
+}

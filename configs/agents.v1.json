@@ -1,0 +1,182 @@
+{
+  "pool_version": "v1",
+  "notes": "Seven slots mirroring Trinity section 4.1: three closed frontier models plus four open-weight ones, including one open base model in both direct and reasoning mode. Those two slots use the provider's sibling slugs (-instruct-2507 / -thinking-2507), not one hybrid slug, because a request-level reasoning toggle is advisory and would silently collapse them into the same agent. Slugs are filled by scripts/preflight_agents.py after scripts/select_pool.py runs the Appendix A.6 selection over a screening matrix.",
+  "paper_reference": [
+    "GPT-5",
+    "Gemini-2.5-pro",
+    "Claude-4-Sonnet",
+    "Gemma-3-27B-It",
+    "DeepSeek-R1-Distill-Qwen-32B",
+    "Qwen3-32B (direct)",
+    "Qwen3-32B (reasoning)"
+  ],
+  "protocol": {
+    "max_tokens": 4096,
+    "temperature": 0.1,
+    "top_p": 1.0,
+    "reasoning_effort": "minimal",
+    "timeout_s": 180.0,
+    "max_retries": 3
+  },
+  "agents": [
+    {
+      "index": 0,
+      "id": "frontier_a",
+      "provider": "openrouter",
+      "slug": "openai/gpt-oss-120b",
+      "description": "Strong anchor, slot 1 of 3. Large open MoE reasoner; stands in for the paper's GPT-5 role on a budget pool.",
+      "capabilities": [
+        "general",
+        "code",
+        "reasoning",
+        "open_weights"
+      ],
+      "is_reasoning_model": true,
+      "verified_at": "2026-08-11",
+      "context_window": 131072,
+      "price_per_1m_prompt_usd": 0.037,
+      "price_per_1m_output_usd": 0.17
+    },
+    {
+      "index": 1,
+      "id": "frontier_b",
+      "provider": "openrouter",
+      "slug": "deepseek/deepseek-v4-flash-0731",
+      "description": "Strong anchor, slot 2 of 3. A different vendor and architecture from slot 0 so failure profiles differ.",
+      "capabilities": [
+        "general",
+        "math",
+        "reasoning",
+        "long_context"
+      ],
+      "is_reasoning_model": true,
+      "verified_at": "2026-08-11",
+      "context_window": 1048576,
+      "price_per_1m_prompt_usd": 0.08,
+      "price_per_1m_output_usd": 0.18
+    },
+    {
+      "index": 2,
+      "id": "frontier_c",
+      "provider": "openrouter",
+      "slug": "google/gemma-3-27b-it",
+      "description": "Strong anchor, slot 3 of 3. Balanced rather than peaked; often the best fixed agent, which is what makes S* honest.",
+      "capabilities": [
+        "general",
+        "long_context",
+        "open_weights"
+      ],
+      "is_reasoning_model": false,
+      "verified_at": "2026-08-11",
+      "context_window": 262144,
+      "price_per_1m_prompt_usd": 0.08,
+      "price_per_1m_output_usd": 0.45
+    },
+    {
+      "index": 3,
+      "id": "open_distill_reasoning",
+      "provider": "openrouter",
+      "slug": "qwen/qwen3-14b",
+      "description": "RETIRED during collection on 2026-08-11: returned 14,433 completion tokens against the 4,096 cap. It passed pre-flight only because its length probe happened to answer in 640 tokens, which is not evidence of compliance. Third Qwen slug to do this. Index 3 stays reserved.",
+      "capabilities": [
+        "reasoning",
+        "math",
+        "open_weights"
+      ],
+      "is_reasoning_model": true,
+      "verified_at": null,
+      "context_window": 131072,
+      "price_per_1m_prompt_usd": 0.06,
+      "price_per_1m_output_usd": 0.24,
+      "retired": true
+    },
+    {
+      "index": 4,
+      "id": "open_mid",
+      "provider": "openrouter",
+      "slug": "mistralai/mistral-nemo",
+      "description": "Mid-tier open-weight generalist (Gemma-3-27B class). The weakest agent on purpose: cheap, and uniquely best somewhere.",
+      "capabilities": [
+        "general",
+        "low_cost",
+        "open_weights"
+      ],
+      "is_reasoning_model": false,
+      "verified_at": "2026-08-11",
+      "context_window": 131072,
+      "price_per_1m_prompt_usd": 0.019,
+      "price_per_1m_output_usd": 0.03
+    },
+    {
+      "index": 5,
+      "id": "open_direct",
+      "provider": "openrouter",
+      "slug": "qwen/qwen3-next-80b-a3b-instruct",
+      "description": "RETIRED at pre-flight on 2026-08-11: honoured the 4,096 cap on one run (finish_reason 'length') and returned 23,892 tokens with finish_reason 'stop' on the next. max_tokens compliance follows the upstream provider OpenRouter routes to, which varies per call, so no probe can certify this slug. Index 5 stays reserved.",
+      "capabilities": [
+        "general",
+        "low_latency",
+        "open_weights",
+        "self_hostable"
+      ],
+      "is_reasoning_model": false,
+      "verified_at": null,
+      "context_window": 262144,
+      "price_per_1m_prompt_usd": 0.09,
+      "price_per_1m_output_usd": 1.1,
+      "retired": true
+    },
+    {
+      "index": 6,
+      "id": "open_reasoning",
+      "provider": "openrouter",
+      "slug": "qwen/qwen3-next-80b-a3b-thinking",
+      "description": "RETIRED at pre-flight on 2026-08-11: returned 75,625 completion tokens against the 4,096 cap with finish_reason 'stop'. Every Qwen -thinking sibling probed so far ignores max_tokens (24k, 24k, 75k), so the direct/reasoning contrast is unavailable on this provider. Index 6 stays reserved and is never reassigned.",
+      "capabilities": [
+        "reasoning",
+        "open_weights",
+        "self_hostable"
+      ],
+      "is_reasoning_model": true,
+      "verified_at": null,
+      "context_window": 262144,
+      "price_per_1m_prompt_usd": 0.15,
+      "price_per_1m_output_usd": 1.2,
+      "retired": true
+    },
+    {
+      "index": 7,
+      "id": "open_cheap_reasoning",
+      "provider": "openrouter",
+      "slug": "inclusionai/ling-3.0-flash",
+      "description": "Cheapest reasoning-capable model in the catalogue. A new vendor family, so its failure profile should not correlate with the others.",
+      "capabilities": [
+        "reasoning",
+        "low_cost",
+        "open_weights"
+      ],
+      "is_reasoning_model": true,
+      "verified_at": "2026-08-11",
+      "context_window": 262144,
+      "price_per_1m_prompt_usd": 0.021,
+      "price_per_1m_output_usd": 0.063
+    },
+    {
+      "index": 8,
+      "id": "open_coder",
+      "provider": "openrouter",
+      "slug": "qwen/qwen3-coder-30b-a3b-instruct",
+      "description": "RETIRED at pre-flight on 2026-08-11: returned HTTP 200 with no content on 35% of calls (7 of 20) for a trivial prompt. Empty responses grade as wrong answers, so this column would have read as a weak agent rather than a broken one. The pool still has no code specialist. Index 8 stays reserved.",
+      "capabilities": [
+        "code",
+        "open_weights"
+      ],
+      "is_reasoning_model": false,
+      "verified_at": null,
+      "context_window": 262144,
+      "price_per_1m_prompt_usd": 0.07,
+      "price_per_1m_output_usd": 0.28,
+      "retired": true
+    }
+  ]
+}
