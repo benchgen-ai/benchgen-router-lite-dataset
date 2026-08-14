@@ -1,0 +1,298 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="rlTitle rlDesc">
+  <title id="rlTitle">BenchGen Router Lite architecture</title>
+  <desc id="rlDesc">A query is embedded by a frozen Qwen3-1.7B backbone, routed by a lightweight Router Head, and answered by one selected candidate model, whose reply is returned to the user. Each stage lights up as the query passes through it, and the selected model changes from query to query.</desc>
+
+  <defs>
+    <linearGradient id="rlBrand" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FF9A3D" />
+      <stop offset="1" stop-color="#FF5A0F" />
+    </linearGradient>
+    <linearGradient id="rlAccentLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#FF6412" />
+      <stop offset="1" stop-color="#FFC24B" />
+    </linearGradient>
+    <linearGradient id="rlWave" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#7C89E8" stop-opacity="0.07" />
+      <stop offset="1" stop-color="#7C89E8" stop-opacity="0" />
+    </linearGradient>
+    <marker id="rlFlow" markerWidth="9" markerHeight="9" refX="6.5" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#93A6C6" />
+    </marker>
+    <marker id="rlActive" markerWidth="9" markerHeight="9" refX="6.5" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#FF6412" />
+    </marker>
+
+    <style>
+      text { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+
+      /* which query is running: three 4s phases across a 12s loop */
+      @keyframes rlPh1 { 0%, 33.32% { opacity: 1 } 33.33%, 100% { opacity: 0 } }
+      @keyframes rlPh2 { 0%, 33.32% { opacity: 0 } 33.33%, 66.65% { opacity: 1 } 66.66%, 100% { opacity: 0 } }
+      @keyframes rlPh3 { 0%, 66.65% { opacity: 0 } 66.66%, 100% { opacity: 1 } }
+
+      /* the answer lands late in each phase */
+      @keyframes rlAns1 { 0%, 24.9% { opacity: 0 } 25%, 33.32% { opacity: 1 } 33.33%, 100% { opacity: 0 } }
+      @keyframes rlAns2 { 0%, 58.2% { opacity: 0 } 58.3%, 66.65% { opacity: 1 } 66.66%, 100% { opacity: 0 } }
+      @keyframes rlAns3 { 0%, 91.5% { opacity: 0 } 91.6%, 100% { opacity: 1 } }
+
+      /* each stage lights up in turn, once per 4s query */
+      @keyframes rlFlashQ { 0%, 3% { opacity: 0 } 7%, 18% { opacity: 1 } 22%, 100% { opacity: 0 } }
+      @keyframes rlFlashB { 0%, 21% { opacity: 0 } 25%, 36% { opacity: 1 } 40%, 100% { opacity: 0 } }
+      @keyframes rlFlashR { 0%, 39% { opacity: 0 } 43%, 54% { opacity: 1 } 58%, 100% { opacity: 0 } }
+      @keyframes rlFlashP { 0%, 76% { opacity: 0 } 80%, 91% { opacity: 1 } 95%, 100% { opacity: 0 } }
+
+      /* the travelling signal is only visible while it is moving */
+      @keyframes rlDot1 { 0%, 1.9% { opacity: 0 } 2%, 24% { opacity: 1 } 24.1%, 100% { opacity: 0 } }
+      @keyframes rlDot2 { 0%, 35.2% { opacity: 0 } 35.3%, 57.3% { opacity: 1 } 57.4%, 100% { opacity: 0 } }
+      @keyframes rlDot3 { 0%, 68.6% { opacity: 0 } 68.7%, 90.7% { opacity: 1 } 90.8%, 100% { opacity: 0 } }
+
+      @keyframes rlDash { to { stroke-dashoffset: -34 } }
+
+      #rlQb1, #rlAct1, #rlAr1 { animation: rlPh1 12s linear infinite; }
+      #rlQb2, #rlAct2, #rlAr2 { animation: rlPh2 12s linear infinite; }
+      #rlQb3, #rlAct3, #rlAr3 { animation: rlPh3 12s linear infinite; }
+
+      #rlRt1 { animation: rlPh1 12s linear infinite, rlDash 0.9s linear infinite; }
+      #rlRt2 { animation: rlPh2 12s linear infinite, rlDash 0.9s linear infinite; }
+      #rlRt3 { animation: rlPh3 12s linear infinite, rlDash 0.9s linear infinite; }
+
+      #rlAb1 { animation: rlAns1 12s linear infinite; }
+      #rlAb2 { animation: rlAns2 12s linear infinite; }
+      #rlAb3 { animation: rlAns3 12s linear infinite; }
+
+      #rlFlQuery    { animation: rlFlashQ 4s linear infinite; }
+      #rlFlBackbone { animation: rlFlashB 4s linear infinite; }
+      #rlFlRouter   { animation: rlFlashR 4s linear infinite; }
+      #rlFlReply    { animation: rlFlashP 4s linear infinite; }
+
+      #rlDot1 { animation: rlDot1 12s linear infinite; }
+      #rlDot2 { animation: rlDot2 12s linear infinite; }
+      #rlDot3 { animation: rlDot3 12s linear infinite; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1600" height="900" fill="#FBFCFF" />
+  <path d="M0,772 C240,742 430,852 720,842 C1010,832 1200,782 1600,772 L1600,900 L0,900 Z" fill="url(#rlWave)" />
+
+  <!-- HEADER -->
+  <g id="header">
+    <rect x="60" y="48" width="62" height="62" rx="18" fill="url(#rlBrand)" />
+    <g transform="translate(91,79)" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round">
+      <line x1="-8" y1="0" x2="7" y2="-9" />
+      <line x1="-8" y1="0" x2="7" y2="9" />
+      <circle cx="-9" cy="0" r="4.6" fill="#FFFFFF" stroke="none" />
+      <circle cx="8" cy="-10" r="4.6" fill="#FFFFFF" stroke="none" />
+      <circle cx="8" cy="10" r="4.6" fill="#FFFFFF" stroke="none" />
+    </g>
+
+    <text x="142" y="92" font-size="52" font-weight="700" fill="#0D1B36" letter-spacing="-0.5">BenchGen Router Lite</text>
+    <text x="144" y="133" font-size="26" font-weight="400" fill="#7C8BA8">Learned routing for model pools</text>
+
+    <rect x="60" y="160" width="92" height="5" rx="2.5" fill="url(#rlAccentLine)" />
+
+    <text x="60" y="200" font-size="23" fill="#2B3A55">A lightweight router learns which language</text>
+    <text x="60" y="232" font-size="23" fill="#2B3A55">model should answer each query.</text>
+  </g>
+
+  <!-- QUERY -->
+  <g id="query-stage">
+    <rect x="60" y="365" width="200" height="210" rx="20" fill="#FFFFFF" stroke="#E4EAF5" stroke-width="1.5" />
+    <circle cx="160" cy="420" r="26" fill="#EAF1FD" />
+    <g transform="translate(160,420)" fill="#3B76E8">
+      <circle cx="0" cy="-6" r="6.2" />
+      <path d="M-10,12.5 A10,11 0 0 1 10,12.5 Z" />
+    </g>
+    <text x="160" y="496" text-anchor="middle" font-size="21" font-weight="700" fill="#0D1B36">Query</text>
+    <text x="160" y="524" text-anchor="middle" font-size="15.5" fill="#7C8BA8">user prompt</text>
+    <rect id="rlFlQuery" x="60" y="365" width="200" height="210" rx="20" fill="none" stroke="#FF6412" stroke-width="2.4" opacity="0" />
+  </g>
+
+  <!-- QUESTION BUBBLE: centred under Query, rotates through three queries -->
+  <g id="query-bubble">
+    <path d="M160,575 L160,600" stroke="#FF6412" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="1 8" fill="none" />
+    <path d="M147,624 L173,624 L160,602 Z" fill="#FFFFFF" stroke="#FFB27A" stroke-width="1.8" stroke-linejoin="round" />
+    <rect x="52" y="622" width="216" height="60" rx="15" fill="#FFFFFF" stroke="#FFB27A" stroke-width="1.8" />
+    <path d="M149,623 L171,623" stroke="#FFFFFF" stroke-width="2.6" />
+
+    <text id="rlQb1" x="160" y="660" text-anchor="middle" font-size="20" font-weight="600" fill="#12203C" opacity="1">&#8220;What&#8217;s 47 &#215; 6?&#8221;</text>
+    <text id="rlQb2" x="160" y="660" text-anchor="middle" font-size="20" font-weight="600" fill="#12203C" opacity="0">&#8220;Capital of Japan?&#8221;</text>
+    <text id="rlQb3" x="160" y="660" text-anchor="middle" font-size="20" font-weight="600" fill="#12203C" opacity="0">&#8220;If 3x = 12, x = ?&#8221;</text>
+  </g>
+
+  <path d="M268,470 L348,470" stroke="#93A6C6" stroke-width="2" fill="none" marker-end="url(#rlFlow)" />
+  <text x="310" y="456" text-anchor="middle" font-size="16" fill="#7C8BA8">embed</text>
+
+  <!-- FROZEN BACKBONE -->
+  <g id="backbone-stage">
+    <rect x="360" y="365" width="200" height="210" rx="20" fill="#F8FBFF" stroke="#DEE9F9" stroke-width="1.5" />
+    <circle cx="460" cy="420" r="26" fill="#EAF1FD" />
+    <g transform="translate(460,420)" stroke="#3B76E8" stroke-width="2.2" fill="none" stroke-linejoin="round">
+      <path d="M0,-11.5 L10.5,-5.8 L10.5,5.8 L0,11.5 L-10.5,5.8 L-10.5,-5.8 Z" />
+      <path d="M0,-11.5 L0,1 M0,1 L10.5,5.8 M0,1 L-10.5,5.8" />
+    </g>
+    <text x="460" y="492" text-anchor="middle" font-size="21" font-weight="700" fill="#0D1B36">Frozen Backbone</text>
+    <text x="460" y="519" text-anchor="middle" font-size="17" fill="#3B76E8">Qwen3-1.7B</text>
+    <text x="460" y="544" text-anchor="middle" font-size="15.5" fill="#7C8BA8">weights never update</text>
+    <rect id="rlFlBackbone" x="360" y="365" width="200" height="210" rx="20" fill="none" stroke="#FF6412" stroke-width="2.4" opacity="0" />
+  </g>
+
+  <path d="M568,470 L648,470" stroke="#93A6C6" stroke-width="2" fill="none" marker-end="url(#rlFlow)" />
+  <text x="610" y="456" text-anchor="middle" font-size="16" fill="#7C8BA8">embedding</text>
+
+  <!-- ROUTER HEAD -->
+  <g id="router-stage">
+    <rect x="660" y="365" width="200" height="210" rx="20" fill="#FFF7F0" stroke="#FFCCA3" stroke-width="1.6" />
+    <circle cx="760" cy="420" r="26" fill="#FF6412" />
+    <g transform="translate(760,420) scale(0.86)">
+      <path d="M-9.5,-3 C-9.5,-9 -5,-12.5 0,-11.5 C5,-12.5 9.5,-9 9.5,-3 C11.8,-1.2 11,3 8,4.2 C7,8.2 3,10.5 0,8.6 C-3,10.5 -7,8.2 -8,4.2 C-11,3 -11.8,-1.2 -9.5,-3 Z" fill="#FFFFFF" />
+      <g stroke="#FF6412" stroke-width="1.7" stroke-linecap="round" fill="none">
+        <line x1="0" y1="-11.5" x2="0" y2="8.6" />
+        <path d="M-4.2,-7 C-7,-5 -7,-1.4 -4.2,0.6" />
+        <path d="M4.2,-7 C7,-5 7,-1.4 4.2,0.6" />
+      </g>
+    </g>
+    <text x="760" y="492" text-anchor="middle" font-size="21" font-weight="700" fill="#0D1B36">Router Head</text>
+    <text x="760" y="519" text-anchor="middle" font-size="17" fill="#F26212">10,245 params</text>
+    <text x="760" y="544" text-anchor="middle" font-size="15.5" fill="#7C8BA8">evolved with CMA-ES</text>
+    <rect id="rlFlRouter" x="660" y="365" width="200" height="210" rx="20" fill="none" stroke="#FF6412" stroke-width="2.6" opacity="0" />
+  </g>
+
+  <!-- CANDIDATE MODELS -->
+  <g id="candidate-models">
+    <rect x="990" y="150" width="370" height="590" rx="26" fill="#FCFDFF" stroke="#E4EAF5" stroke-width="1.5" />
+    <text x="1175" y="200" text-anchor="middle" font-size="24" font-weight="700" fill="#0D1B36">Candidate Models</text>
+    <text x="1175" y="226" text-anchor="middle" font-size="15" fill="#7C8BA8">fixed positions, one selected per query</text>
+
+    <!-- structural rail: frontier_c sits on the centre line, straight through from Router Head -->
+    <path d="M940,274 L940,666" stroke="#DDE6F4" stroke-width="1.6" fill="none" />
+    <path d="M860,470 L1020,470" stroke="#DDE6F4" stroke-width="1.6" fill="none" />
+    <path d="M940,274 L1020,274 M940,372 L1020,372 M940,568 L1020,568 M940,666 L1020,666" stroke="#DDE6F4" stroke-width="1.6" fill="none" />
+
+    <!-- active routing paths: exactly one visible per query -->
+    <path id="rlRt2" d="M860,470 L940,470 L940,372 L1014,372" stroke="#FF6412" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-dasharray="9 8" marker-end="url(#rlActive)" opacity="0" />
+    <path id="rlRt1" d="M860,470 L940,470 L940,568 L1014,568" stroke="#FF6412" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-dasharray="9 8" marker-end="url(#rlActive)" opacity="1" />
+    <path id="rlRt3" d="M860,470 L940,470 L940,666 L1014,666" stroke="#FF6412" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-dasharray="9 8" marker-end="url(#rlActive)" opacity="0" />
+
+    <!-- frontier_a -->
+    <g id="model-frontier-a" data-model="frontier_a">
+      <rect x="1020" y="236" width="310" height="76" rx="16" fill="#FFFFFF" stroke="#E4EAF5" stroke-width="1.5" />
+      <circle cx="1058" cy="274" r="20" fill="#EAF1FD" />
+      <path d="M1058,263 l3,8 l8,3 l-8,3 l-3,8 l-3,-8 l-8,-3 l8,-3 Z" fill="#3B76E8" />
+      <text x="1094" y="282" font-size="21" fill="#0D1B36">frontier_a</text>
+    </g>
+
+    <!-- frontier_b, selected on query 2 -->
+    <g id="model-frontier-b" data-model="frontier_b">
+      <rect x="1020" y="334" width="310" height="76" rx="16" fill="#FFFFFF" stroke="#E4EAF5" stroke-width="1.5" />
+      <circle cx="1058" cy="372" r="20" fill="#EAF1FD" />
+      <path d="M1058,361 l3,8 l8,3 l-8,3 l-3,8 l-3,-8 l-8,-3 l8,-3 Z" fill="#3B76E8" />
+      <text x="1094" y="380" font-size="21" fill="#0D1B36">frontier_b</text>
+      <g id="rlAct2" opacity="0">
+        <rect x="1020" y="334" width="310" height="76" rx="16" fill="#FFF7F1" stroke="#FF6412" stroke-width="2.2" />
+        <circle cx="1058" cy="372" r="20" fill="#FF6412" />
+        <path d="M1049,372 l6,6 l11,-12" stroke="#FFFFFF" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+        <text x="1094" y="380" font-size="21" font-weight="600" fill="#F26212">frontier_b</text>
+        <rect x="1234" y="359" width="72" height="26" rx="13" fill="#FFE4D2" />
+        <text x="1270" y="377" text-anchor="middle" font-size="13" font-weight="700" letter-spacing="0.6" fill="#D9531E">ACTIVE</text>
+      </g>
+    </g>
+
+    <!-- frontier_c, on the centre line -->
+    <g id="model-frontier-c" data-model="frontier_c">
+      <rect x="1020" y="432" width="310" height="76" rx="16" fill="#FFFFFF" stroke="#E4EAF5" stroke-width="1.5" />
+      <circle cx="1058" cy="470" r="20" fill="#EAF1FD" />
+      <path d="M1058,459 l3,8 l8,3 l-8,3 l-3,8 l-3,-8 l-8,-3 l8,-3 Z" fill="#3B76E8" />
+      <text x="1094" y="478" font-size="21" fill="#0D1B36">frontier_c</text>
+    </g>
+
+    <!-- open_mid, selected on query 1 -->
+    <g id="model-open-mid" data-model="open_mid">
+      <rect x="1020" y="530" width="310" height="76" rx="16" fill="#FFFFFF" stroke="#E4EAF5" stroke-width="1.5" />
+      <circle cx="1058" cy="568" r="20" fill="#EAF1FD" />
+      <path d="M1058,557 l3,8 l8,3 l-8,3 l-3,8 l-3,-8 l-8,-3 l8,-3 Z" fill="#3B76E8" />
+      <text x="1094" y="576" font-size="21" fill="#0D1B36">open_mid</text>
+      <g id="rlAct1" opacity="1">
+        <rect x="1020" y="530" width="310" height="76" rx="16" fill="#FFF7F1" stroke="#FF6412" stroke-width="2.2" />
+        <circle cx="1058" cy="568" r="20" fill="#FF6412" />
+        <path d="M1049,568 l6,6 l11,-12" stroke="#FFFFFF" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+        <text x="1094" y="576" font-size="21" font-weight="600" fill="#F26212">open_mid</text>
+        <rect x="1234" y="555" width="72" height="26" rx="13" fill="#FFE4D2" />
+        <text x="1270" y="573" text-anchor="middle" font-size="13" font-weight="700" letter-spacing="0.6" fill="#D9531E">ACTIVE</text>
+      </g>
+    </g>
+
+    <!-- open_cheap_reasoning, selected on query 3 -->
+    <g id="model-open-cheap-reasoning" data-model="open_cheap_reasoning">
+      <rect x="1020" y="628" width="310" height="76" rx="16" fill="#FFFFFF" stroke="#E4EAF5" stroke-width="1.5" />
+      <circle cx="1058" cy="666" r="20" fill="#EAF1FD" />
+      <path d="M1049,672 a6.5,6.5 0 0 1 1.6,-12.6 a8.4,8.4 0 0 1 15.4,2.6 a5.6,5.6 0 0 1 -0.8,10 Z" fill="#3B76E8" />
+      <text x="1094" y="674" font-size="19" fill="#0D1B36">open_cheap_reasoning</text>
+      <g id="rlAct3" opacity="0">
+        <rect x="1020" y="628" width="310" height="76" rx="16" fill="#FFF7F1" stroke="#FF6412" stroke-width="2.2" />
+        <circle cx="1058" cy="666" r="20" fill="#FF6412" />
+        <path d="M1049,666 l6,6 l11,-12" stroke="#FFFFFF" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+        <text x="1094" y="674" font-size="19" font-weight="600" fill="#F26212">open_cheap_reasoning</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- SELECTED MODEL -> REPLY: exactly one visible per query -->
+  <path id="rlAr2" d="M1330,372 L1390,372 L1390,470 L1444,470" stroke="#FF6412" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none" marker-end="url(#rlActive)" opacity="0" />
+  <path id="rlAr1" d="M1330,568 L1390,568 L1390,470 L1444,470" stroke="#FF6412" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none" marker-end="url(#rlActive)" opacity="1" />
+  <path id="rlAr3" d="M1330,666 L1390,666 L1390,470 L1444,470" stroke="#FF6412" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none" marker-end="url(#rlActive)" opacity="0" />
+  <text x="1417" y="456" text-anchor="middle" font-size="16" fill="#7C8BA8">answer</text>
+
+  <!-- REPLY -->
+  <g id="reply-stage">
+    <rect x="1450" y="365" width="140" height="210" rx="20" fill="#FFFFFF" stroke="#E4EAF5" stroke-width="1.5" />
+    <circle cx="1520" cy="420" r="26" fill="#FFEFE4" />
+    <g transform="translate(1520,420)">
+      <path d="M-11,-8 a3.5,3.5 0 0 1 3.5,-3.5 h15 a3.5,3.5 0 0 1 3.5,3.5 v9 a3.5,3.5 0 0 1 -3.5,3.5 h-9 l-6,5.5 v-5.5 h-0 a3.5,3.5 0 0 1 -3.5,-3.5 Z" fill="#FF6412" />
+      <circle cx="-4" cy="-3.5" r="1.7" fill="#FFEFE4" />
+      <circle cx="1" cy="-3.5" r="1.7" fill="#FFEFE4" />
+      <circle cx="6" cy="-3.5" r="1.7" fill="#FFEFE4" />
+    </g>
+    <text x="1520" y="496" text-anchor="middle" font-size="21" font-weight="700" fill="#0D1B36">Reply</text>
+    <text x="1520" y="524" text-anchor="middle" font-size="15.5" fill="#7C8BA8">to user</text>
+    <rect id="rlFlReply" x="1450" y="365" width="140" height="210" rx="20" fill="none" stroke="#FF6412" stroke-width="2.4" opacity="0" />
+  </g>
+
+  <!-- ANSWER BUBBLE: centred under Reply, appears once the selected model has answered -->
+  <g id="reply-bubble">
+    <g id="rlAb1" opacity="0">
+      <path d="M1520,575 L1520,600" stroke="#FF6412" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="1 8" fill="none" />
+      <path d="M1507,624 L1533,624 L1520,602 Z" fill="#FFF7F1" stroke="#FF6412" stroke-width="1.8" stroke-linejoin="round" />
+      <rect x="1442" y="622" width="156" height="60" rx="15" fill="#FFF7F1" stroke="#FF6412" stroke-width="1.8" />
+      <path d="M1509,623 L1531,623" stroke="#FFF7F1" stroke-width="2.6" />
+      <text x="1520" y="660" text-anchor="middle" font-size="20" font-weight="700" fill="#C2410C">&#8220;282&#8221;</text>
+    </g>
+    <g id="rlAb2" opacity="0">
+      <path d="M1520,575 L1520,600" stroke="#FF6412" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="1 8" fill="none" />
+      <path d="M1507,624 L1533,624 L1520,602 Z" fill="#FFF7F1" stroke="#FF6412" stroke-width="1.8" stroke-linejoin="round" />
+      <rect x="1442" y="622" width="156" height="60" rx="15" fill="#FFF7F1" stroke="#FF6412" stroke-width="1.8" />
+      <path d="M1509,623 L1531,623" stroke="#FFF7F1" stroke-width="2.6" />
+      <text x="1520" y="660" text-anchor="middle" font-size="20" font-weight="700" fill="#C2410C">&#8220;Tokyo&#8221;</text>
+    </g>
+    <g id="rlAb3" opacity="0">
+      <path d="M1520,575 L1520,600" stroke="#FF6412" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="1 8" fill="none" />
+      <path d="M1507,624 L1533,624 L1520,602 Z" fill="#FFF7F1" stroke="#FF6412" stroke-width="1.8" stroke-linejoin="round" />
+      <rect x="1442" y="622" width="156" height="60" rx="15" fill="#FFF7F1" stroke="#FF6412" stroke-width="1.8" />
+      <path d="M1509,623 L1531,623" stroke="#FFF7F1" stroke-width="2.6" />
+      <text x="1520" y="660" text-anchor="middle" font-size="20" font-weight="700" fill="#C2410C">&#8220;4&#8221;</text>
+    </g>
+  </g>
+
+  <!-- travelling signal: one continuous trip per query, Query through to Reply -->
+  <circle id="rlDot1" r="7" fill="#FF6412" opacity="0">
+    <animateMotion dur="12s" repeatCount="indefinite" calcMode="linear" keyTimes="0;0.02;0.24;1" keyPoints="0;0;1;1"
+      path="M160,470 L460,470 L760,470 L940,470 L940,568 L1175,568 L1330,568 L1390,568 L1390,470 L1520,470" />
+  </circle>
+  <circle id="rlDot2" r="7" fill="#FF6412" opacity="0">
+    <animateMotion dur="12s" repeatCount="indefinite" calcMode="linear" keyTimes="0;0.353;0.573;1" keyPoints="0;0;1;1"
+      path="M160,470 L460,470 L760,470 L940,470 L940,372 L1175,372 L1330,372 L1390,372 L1390,470 L1520,470" />
+  </circle>
+  <circle id="rlDot3" r="7" fill="#FF6412" opacity="0">
+    <animateMotion dur="12s" repeatCount="indefinite" calcMode="linear" keyTimes="0;0.687;0.907;1" keyPoints="0;0;1;1"
+      path="M160,470 L460,470 L760,470 L940,470 L940,666 L1175,666 L1330,666 L1390,666 L1390,470 L1520,470" />
+  </circle>
+</svg>
