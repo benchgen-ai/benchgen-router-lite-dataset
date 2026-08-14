@@ -1,0 +1,42 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+*.key
+
+# Environments
+.venv/
+.venv*/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.Python
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Raw upstream downloads and HF cache — regenerable, large
+data/raw/
+.cache/
+*.zip
+
+# Reference papers — third-party copyright, not ours to redistribute
+*.pdf
+
+# Tooling
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+.coverage
+htmlcov/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

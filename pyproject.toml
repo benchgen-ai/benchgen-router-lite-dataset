@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "benchgen-router-lite"
+version = "0.1.0"
+description = "BenchGen Router Lite: the routing dataset and the pipeline that generated it."
+readme = "README.md"
+requires-python = ">=3.10,<3.14"
+license = { text = "Apache-2.0" }
+authors = [{ name = "tahsinsoyak" }]
+dependencies = [
+    "pydantic>=2.7,<3",
+    "httpx>=0.27,<0.29",
+    "python-dotenv>=1.0,<2",
+]
+
+[project.optional-dependencies]
+sources = [
+    "datasets>=2.19",
+    "huggingface-hub>=0.23",
+]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.5",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
