@@ -66,6 +66,7 @@ router it produced exactly matched "always pick one specific model".
 | Path | What |
 | --- | --- |
 | `pipeline/` | The five scripts that generated everything, in order |
+| `train/` | The router head trainer: the platform's own training worker, runnable standalone |
 | `configs/` | Agent pool and call protocol, sampling plan and seed, gate thresholds |
 | `data/tasks.v1.jsonl` | 1,110 normalized tasks across 8 benchmark sources |
 | `data/rewards.v1-pilot.jsonl` | The reward matrix: 900 graded calls with per-call cost, latency and tokens |
@@ -146,6 +147,27 @@ Every report carries a SHA-256 digest of its inputs and no timestamps, so an emp
 means nothing drifted. Stage 4 exits non-zero on a STOP verdict, so CI can enforce the gate.
 
 See [pipeline/README.md](pipeline/README.md) for what each stage enforces.
+
+## Train the router head
+
+Two ways to run the exact same training algorithm on the published dataset: BenchGen's **Train**
+tab (no code, point it at the datasets, pick **Head**, click **Start Training**), or the
+[`train/`](train/) folder in this repo, which is not a rewrite, it is the platform's own training
+worker (the embedding step, the head shapes, the sep-CMA-ES loop) with only the storage boundary
+changed to write local files instead of uploading to platform-internal storage.
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -e ".[train]"
+.\.venv\Scripts\python.exe train\train_router_head.py
+```
+
+With no argument it reproduces the guide's own run against `benchgen/router-pilot` and
+`benchgen/router-pilot-tasks`: `Qwen/Qwen3-1.7B` backbone, `sigma0` 0.5, 60 generations, seed 42,
+a pure linear head. Every number in it checks out against the published dataset: 46 joined rows,
+35 train / 11 test, embedding dim 2048, 10,245 head parameters, verified by actually running the
+data-loading and joining path against the real published data before this was committed. See
+[train/README.md](train/README.md) for the two-way comparison table and a known issue with
+`benchgen/router-pilot-tasks`'s Hub metadata that the bundled config works around.
 
 ## The model pool
 
