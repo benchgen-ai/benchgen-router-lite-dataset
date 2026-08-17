@@ -1,0 +1,14 @@
+{
+  "model_id": "head-Qwen3-1.7B-example",
+  "model": "Qwen/Qwen3-1.7B",
+  "rewards_dataset": "benchgen/router-pilot",
+  "rewards_dataset_split": "train",
+  "tasks_url": "https://huggingface.co/datasets/benchgen/router-pilot-tasks/resolve/main/train.jsonl",
+  "test_split": "test",
+  "head_hidden_dim": 0,
+  "cma_seed": 42,
+  "cma_sigma0": 0.5,
+  "cma_generations": 60,
+  "device": "cpu",
+  "output_dir": "train/output/head-Qwen3-1.7B-example"
+}

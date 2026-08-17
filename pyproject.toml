@@ -21,6 +21,12 @@ sources = [
     "datasets>=2.19",
     "huggingface-hub>=0.23",
 ]
+train = [
+    "datasets>=2.19",
+    "torch>=2.0",
+    "transformers>=4.40",
+    "cma>=3.3",
+]
 dev = [
     "pytest>=8.0",
     "pytest-asyncio>=0.23",
