@@ -14,6 +14,9 @@
 [![License](https://img.shields.io/github/license/benchgen-ai/benchgen-router-lite-dataset)](./LICENSE)
 [![Tests](https://img.shields.io/badge/tests-85%20passing-brightgreen)](tests/)
 [![Python](https://img.shields.io/badge/python-3.10%E2%80%933.13-blue)](pyproject.toml)
+[![Dataset on BenchGen](https://img.shields.io/badge/BenchGen-rewards%20dataset-FF6412)](https://benchgen.com/datasets/benchgen/benchgen-router-rewards-dataset)
+[![Model on BenchGen](https://img.shields.io/badge/BenchGen-router%20head-FF6412)](https://benchgen.com/models/benchgen/benchgen-router-lite)
+[![Dataset on Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-router--pilot-yellow)](https://huggingface.co/datasets/benchgen/router-pilot)
 
 </div>
 
@@ -201,6 +204,22 @@ scanned for anything resembling question text before a single byte is uploaded.
 One source, `rlpr`, was collected but excluded from the release: its answers are free-form prose
 and tables, and the normalized string-match grader used here scores genuinely correct answers as
 wrong. A label that cannot be trusted is worse than no label.
+
+## Explore it live
+
+The rewards dataset, the task pool, and the trained head all have a home outside this repo, with
+their own schema browsers and viewers.
+
+| What | On BenchGen | On Hugging Face |
+| --- | --- | --- |
+| Rewards dataset (46 tasks x 5 agents) | [benchgen.com/datasets/…/benchgen-router-rewards-dataset](https://benchgen.com/datasets/benchgen/benchgen-router-rewards-dataset) | [huggingface.co/datasets/benchgen/router-pilot](https://huggingface.co/datasets/benchgen/router-pilot) |
+| Task pool (1,110 tasks, prompts included) | — | [huggingface.co/datasets/benchgen/router-pilot-tasks](https://huggingface.co/datasets/benchgen/router-pilot-tasks) |
+| Trained head, `head-Qwen3-1.7B-e99b449fde` | [benchgen.com/models/benchgen/benchgen-router-lite](https://benchgen.com/models/benchgen/benchgen-router-lite) | — |
+
+The rewards dataset and the model page both link onward from BenchGen to their underlying
+repository if you want the raw files. The task pool carries full prompt text (see
+[What is published, and what is not](#what-is-published-and-what-is-not) above for why the
+rewards dataset does not), so for now it is reachable on Hugging Face only.
 
 ## Design credit
 
