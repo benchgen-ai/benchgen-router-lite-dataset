@@ -11,7 +11,7 @@
 
 <div align="center">
 
-[![License](https://img.shields.io/github/license/benchgen-ai/benchgen-router-dataset)](./LICENSE)
+[![License](https://img.shields.io/github/license/benchgen-ai/benchgen-router-lite-dataset)](./LICENSE)
 [![Tests](https://img.shields.io/badge/tests-85%20passing-brightgreen)](tests/)
 [![Python](https://img.shields.io/badge/python-3.10%E2%80%933.13-blue)](pyproject.toml)
 
