@@ -24,6 +24,9 @@ data/raw/
 .cache/
 *.zip
 
+# Trained head artifacts — regenerable, and often too large for git
+train/output/
+
 # Reference papers — third-party copyright, not ours to redistribute
 *.pdf
 
