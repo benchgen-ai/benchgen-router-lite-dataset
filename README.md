@@ -37,6 +37,25 @@ what it turned out to say.
 
 **Full write-up:** [benchgen.com/docs/guides/router-head/benchgen-router-lite](https://benchgen.com/docs/guides/router-head/benchgen-router-lite)
 
+## Contents
+
+- [Why this repo exists](#why-this-repo-exists)
+- [What's in here](#whats-in-here)
+- [Cost to build it](#cost-to-build-it)
+- [Install and run the pipeline](#install-and-run-the-pipeline)
+- [Train the router head](#train-the-router-head)
+- [Benchmark results](#benchmark-results), accuracy and cost against a single frontier model
+- [The model pool](#the-model-pool)
+- [Baselines](#baselines)
+- [What is published, and what is not](#what-is-published-and-what-is-not)
+- [Explore it live](#explore-it-live)
+- [Design credit](#design-credit)
+- [License](#license)
+
+Deeper write-ups than a README section warrants live in [`docs/`](docs/): full benchmark
+breakdowns, screenshots, and the router-vs-baseline comparison are in
+[docs/BENCHMARKS.md](docs/BENCHMARKS.md).
+
 ## Why this repo exists
 
 > A routing dataset is only useful if **no single agent dominates**. If one agent is best almost
@@ -67,6 +86,7 @@ router it produced exactly matched "always pick one specific model".
 | --- | --- |
 | `pipeline/` | The five scripts that generated everything, in order |
 | `train/` | The router head trainer: the platform's own training worker, runnable standalone |
+| `docs/` | Deeper write-ups than the README sections warrant, starting with benchmark results |
 | `configs/` | Agent pool and call protocol, sampling plan and seed, gate thresholds |
 | `data/tasks.v1.jsonl` | 1,110 normalized tasks across 8 benchmark sources |
 | `data/rewards.v1-pilot.jsonl` | The reward matrix: 900 graded calls with per-call cost, latency and tokens |
@@ -168,6 +188,33 @@ a pure linear head. Every number in it checks out against the published dataset:
 data-loading and joining path against the real published data before this was committed. See
 [train/README.md](train/README.md) for the two-way comparison table and a known issue with
 `benchgen/router-pilot-tasks`'s Hub metadata that the bundled config works around.
+
+## Benchmark results
+
+**[Router Fidelity Benchmark](https://benchgen.com/benchmarks/platform/router-fidelity-benchmark)**,
+46 in-distribution tasks, checks whether the trained head actually routes rather than collapsing
+to one agent:
+
+| Metric | Value |
+| --- | ---: |
+| Accuracy | 82.6% (38/46) |
+| Total cost | $0.0286 |
+| Total tokens | 14,483 |
+| Routed to `frontier_a` / `frontier_b` / `open_cheap_reasoning` | 36 / 7 / 3 |
+
+Against `anthropic/claude-sonnet-5` called directly for the same 46 questions, no routing at all:
+
+| | BenchGen Router Lite | `claude-sonnet-5` alone |
+| --- | ---: | ---: |
+| Accuracy | **82.6%** (38/46) | 80.4% (37/46) |
+| Total cost | **$0.0286** | $0.0889 |
+| Avg cost per task | **$0.000622** | $0.001932 |
+
+More accurate and **roughly 3.1x cheaper**, on the identical questions, and total tokens are
+close (14,483 against 16,021), so the savings come from routing away from a frontier model on
+questions that don't need one, not from shorter answers. Full breakdown by difficulty and
+domain, plus the out-of-distribution TR Benchmark result that motivated Router Fidelity
+Benchmark's existence, in [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 
 ## The model pool
 
