@@ -3,6 +3,10 @@
 The five scripts that generated the published BenchGen Router Lite datasets, in order, with
 nothing else in the way.
 
+> Running this against your own tasks is fully supported. If you would rather not manage the
+> OpenRouter key, the environment, or the gate thresholds yourself, BenchGen runs this same
+> pipeline for you: **[benchgen.com](https://benchgen.com)**.
+
 `scripts/` holds the full toolbox: catalogue discovery, screening collection, Appendix A.6 pool
 selection, oracle labelling, and every exploratory flag used while the design was being settled.
 This folder is the distilled generation path. No argparse trees, no alternative modes, no

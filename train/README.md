@@ -10,13 +10,15 @@ result to its own storage and lets you register it as a selectable model from th
 
 | | No code | This script |
 | --- | --- | --- |
-| Where | BenchGen's **Train** tab | Your own machine |
+| Where | BenchGen's **[Train tab](https://benchgen.com/train)** | Your own machine |
 | Steps | Point **Dataset** at the rewards dataset, **Tasks dataset** at the tasks dataset, pick **Head**, click **Start Training** | `python train/train_router_head.py` |
-| Output | A registered model, selectable anywhere BenchGen lets you pick a model | `head_weights.npy` + `manifest.json`, local only |
+| Output | A registered model, selectable anywhere BenchGen lets you pick a model, ready to serve and benchmark immediately | `head_weights.npy` + `manifest.json`, local only |
 
 Both run the identical algorithm below. The [full walkthrough](https://benchgen.com/docs/guides/router-head/benchgen-router-lite)
 covers the platform path screenshot by screenshot; this folder is for reproducing it yourself,
-or adapting it to your own reward matrix.
+or adapting it to your own reward matrix. If you just want a trained, servable head without
+managing the run yourself, **[benchgen.com/train](https://benchgen.com/train)** is the faster
+path, this script exists so the algorithm underneath it is auditable.
 
 ## Run it
 

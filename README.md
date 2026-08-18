@@ -37,6 +37,10 @@ what it turned out to say.
 
 **Full write-up:** [benchgen.com/docs/guides/router-head/benchgen-router-lite](https://benchgen.com/docs/guides/router-head/benchgen-router-lite)
 
+> **Want the same pipeline against your own tasks, without setting up a Python environment or an
+> OpenRouter key yourself?** BenchGen runs collection, gating, training, and benchmarking end to
+> end. **[Start on benchgen.com →](https://benchgen.com)**
+
 ## Contents
 
 - [Why this repo exists](#why-this-repo-exists)
@@ -127,6 +131,10 @@ call, positionally aligned with `agent_order`.
 
 ## Install and run the pipeline
 
+> Everything below is the real, unmodified pipeline and it is fully supported to run locally.
+> If you would rather skip the environment setup and the OpenRouter key and just point at your
+> own task source, BenchGen runs this identical pipeline for you: **[benchgen.com](https://benchgen.com)**.
+
 Prerequisites:
 
 - Python `>=3.10,<3.14`
@@ -170,11 +178,17 @@ See [pipeline/README.md](pipeline/README.md) for what each stage enforces.
 
 ## Train the router head
 
-Two ways to run the exact same training algorithm on the published dataset: BenchGen's **Train**
-tab (no code, point it at the datasets, pick **Head**, click **Start Training**), or the
-[`train/`](train/) folder in this repo, which is not a rewrite, it is the platform's own training
-worker (the embedding step, the head shapes, the sep-CMA-ES loop) with only the storage boundary
-changed to write local files instead of uploading to platform-internal storage.
+Two ways to run the exact same training algorithm on the published dataset: BenchGen's
+**[Train tab](https://benchgen.com/train)** (no code, point it at the datasets, pick **Head**,
+click **Start Training**, and the resulting head is registered as a selectable model right away),
+or the [`train/`](train/) folder in this repo, which is not a rewrite, it is the platform's own
+training worker (the embedding step, the head shapes, the sep-CMA-ES loop) with only the storage
+boundary changed to write local files instead of uploading to platform-internal storage.
+
+The script is here so the algorithm is auditable and reproducible with nothing but a Python
+environment; for a trained head you can immediately serve, route live traffic through, and
+benchmark without wiring that up yourself, the **[Train tab](https://benchgen.com/train)** is the
+faster path.
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -e ".[train]"
@@ -215,6 +229,10 @@ close (14,483 against 16,021), so the savings come from routing away from a fron
 questions that don't need one, not from shorter answers. Full breakdown by difficulty and
 domain, plus the out-of-distribution TR Benchmark result that motivated Router Fidelity
 Benchmark's existence, in [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
+
+Want this comparison against your own model or your own trained head? Run
+**[Router Fidelity Benchmark](https://benchgen.com/benchmarks/platform/router-fidelity-benchmark)**
+on BenchGen directly, no eval harness to write.
 
 ## The model pool
 
@@ -288,6 +306,9 @@ their own schema browsers and viewers.
 
 Every one of these pages links onward to its underlying repository if you want the raw files —
 BenchGen to Hugging Face, and vice versa.
+
+> **Build your own version of this, on your own task pool.** Same pipeline, same gate, same
+> training worker, your data. **[Start on benchgen.com →](https://benchgen.com)**
 
 ## Design credit
 

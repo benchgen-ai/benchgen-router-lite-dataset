@@ -8,6 +8,11 @@ cost, or is that a story that only holds up until you check the numbers?
 - [Router vs. a single frontier model](#router-vs-a-single-frontier-model): is it worth it
 - [TR Benchmark](#tr-benchmark-out-of-distribution): out-of-distribution stress test
 
+> Every result below is one run, against this one pool, on this one dataset. Run it against your
+> own trained head, your own pool, or your own tasks on
+> **[benchgen.com/benchmarks/platform/router-fidelity-benchmark](https://benchgen.com/benchmarks/platform/router-fidelity-benchmark)**,
+> no eval harness required.
+
 ## Router Fidelity Benchmark
 
 **[benchgen.com/benchmarks/platform/router-fidelity-benchmark](https://benchgen.com/benchmarks/platform/router-fidelity-benchmark)**
@@ -127,3 +132,9 @@ collapse on unfamiliar data is exactly why Router Fidelity Benchmark above exist
 whether the routing decision itself works, separate from whether it holds up outside the exact
 distribution it was trained on. Full walkthrough, with screenshots of both benchmarks:
 [benchgen.com/docs/guides/router-head/benchgen-router-lite](https://benchgen.com/docs/guides/router-head/benchgen-router-lite).
+
+---
+
+Want to build and benchmark your own router instead of reading about this one? Collection,
+gating, training, and benchmarking all run on **[benchgen.com](https://benchgen.com)**, against
+your own task pool.
