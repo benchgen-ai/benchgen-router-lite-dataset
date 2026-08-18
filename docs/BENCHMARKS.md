@@ -18,8 +18,8 @@ AIME2025) drawn from the exact same distribution `benchgen/router-pilot` /
 env-var-first (`RPE_*` / `MODEL_*`, no `model.py`), scoring is deterministic and grader-aware per
 task (`mcq_letter` / `numeric_match` / `math_expression`), no LLM-as-judge. If the evaluated
 model is a router, the results page adds a per-question routing report: which pool member (and
-the real underlying model, e.g. `openai/gpt-oss-120b`) answered each question, plus the overall
-routing distribution.
+the real underlying model, e.g. `anthropic/claude-sonnet-5`) answered each question, plus the
+overall routing distribution.
 
 ### Why it exists
 
@@ -32,6 +32,12 @@ the exact same sources the router trained on, so a run here is a real fidelity c
 routing decision hold up on the data it was actually built for?
 
 ### Result: `head-Qwen3-1.7B-e99b449fde`
+
+> **Pool update:** `frontier_a` has moved on from data-collection time. The reward matrix this
+> repo publishes, and the TR Benchmark result below, were both collected against
+> `openai/gpt-oss-120b`. This result routes to the pool's current `frontier_a`,
+> `anthropic/claude-sonnet-5`. The `agent_order` identifiers are stable; the real model each one
+> resolves to is a serving-time mapping, independent of the training data.
 
 | Metric | Value |
 | --- | ---: |
@@ -52,11 +58,11 @@ routing decision hold up on the data it was actually built for?
 | Math | 65.0% (13/20) |
 | Reasoning | 100.0% (6/6) |
 
-| Routed to | Questions | Share |
-| --- | ---: | ---: |
-| `frontier_a` (`openai/gpt-oss-120b`) | 36 | 78% |
-| `frontier_b` (`deepseek/deepseek-v4-flash-0731`) | 7 | 15% |
-| `open_cheap_reasoning` (`inclusionai/ling-3.0-flash`) | 3 | 7% |
+| Routed to | Real model | Questions | Share |
+| --- | --- | ---: | ---: |
+| `frontier_a` | `anthropic/claude-sonnet-5` | 36 | 78% |
+| `frontier_b` | `deepseek/deepseek-v4-flash` | 7 | 15% |
+| `open_cheap_reasoning` | `inclusionai/ling-3.0-flash` | 3 | 7% |
 
 Three different agents actually receiving traffic, not one, is the concrete difference
 in-distribution evaluation makes, and what a router doing its job is supposed to look like, in
@@ -66,9 +72,12 @@ surfaces on out-of-distribution data.
 ## Router vs. a single frontier model
 
 The Cost KPI on Router Fidelity Benchmark exists precisely so a router's cost sits on the same
-leaderboard as a single fixed model and can actually be compared. The baseline here is
-`anthropic/claude-sonnet-5` called directly for every one of the same 46 questions, no routing at
-all.
+leaderboard as a single fixed model and can actually be compared. The baseline here is not an
+arbitrary outside model: `anthropic/claude-sonnet-5` is `frontier_a`, the exact model the router
+above picked 36 of 46 times. Calling it directly for every one of the same 46 questions, no
+routing at all, answers a precise question: what does the pool's own strongest model cost when it
+answers everything, against what it costs when the router only reaches for it when a question
+actually calls for it?
 
 | | BenchGen Router Lite | `claude-sonnet-5` alone |
 | --- | ---: | ---: |
@@ -109,11 +118,12 @@ model used alone across every domain and most difficulty bands, at under a third
 ## TR Benchmark (out-of-distribution)
 
 70 Turkish multiple-choice general-knowledge and logic questions, chosen deliberately because
-they look nothing like the training data (English math, knowledge, and reasoning sources). The
-router scored 72.9% overall, but **69 of 70 questions were routed to the same single pool
-member**, `open_mid` (`mistralai/mistral-nemo`), the deliberately weak, cheap agent in the pool.
-That single-agent collapse on unfamiliar data is exactly why Router Fidelity Benchmark above
-exists: it isolates whether the routing decision itself works, separate from whether it holds up
-outside the exact distribution it was trained on. Full walkthrough, with screenshots of both
-benchmarks:
+they look nothing like the training data (English math, knowledge, and reasoning sources). Run
+against the pool as it stood at data-collection time (`frontier_a` = `openai/gpt-oss-120b`, since
+moved to `anthropic/claude-sonnet-5`, see the pool update note above), the router scored 72.9%
+overall, but **69 of 70 questions were routed to the same single pool member**, `open_mid`
+(`mistralai/mistral-nemo`), the deliberately weak, cheap agent in the pool. That single-agent
+collapse on unfamiliar data is exactly why Router Fidelity Benchmark above exists: it isolates
+whether the routing decision itself works, separate from whether it holds up outside the exact
+distribution it was trained on. Full walkthrough, with screenshots of both benchmarks:
 [benchgen.com/docs/guides/router-head/benchgen-router-lite](https://benchgen.com/docs/guides/router-head/benchgen-router-lite).
